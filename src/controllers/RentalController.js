@@ -54,28 +54,34 @@ export async function RentGame(req, res){
 
 export async function DepositGame(req, res){
     const {id} = req.params;
-    const Today = dayjs().format("YYYY-MM-DD");
-    console.log(Today)
+    const today = dayjs().format('YYYY-MM-DD')
+
     try{
-        const GetGame = await db.query(`SELECT * FROM rentals WHERE id=$1`, [id])
+        const getGame = await db.query(`SELECT * FROM rentals WHERE id=$1`, [id])
+        
+        const {rentDate, daysRented, returnDate, originalPrice} = getGame.rows[0]
 
-        if(GetGame.rows.length < 1) return res.sendStatus(404)
-        if(GetGame.rows[0].returnDate != null) return res.sendStatus(400)
+        if(getGame.rows.length < 1) return res.sendStatus(404)
 
-        console.log(GetGame.rows[0].rentDate)
-        if(GetGame.rows[0].rentDate.diff(Today, 'days') <= GetGame.rows[0].daysRented){
-            await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=0 WHERE id=$2`, [Today, id])
+        if(returnDate != null) return res.sendStatus(400)
+        
+        const rentedTime = dayjs().diff(rentDate, 'day')
+        console.log(rentedTime, daysRented)
+
+        if(rentedTime <= daysRented){
+            await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=0 WHERE id=$2`, [today, id])
             res.sendStatus(200)
         }
-        
-        const extraDays= GetGame.rows[0].rentDate.diff(Today, 'days') - GetGame.rows[0].rentedDays
-        const priceDay = GetGame.rows[0].originalPrice/GetGame.rows[0].daysRented
+
+        const extraDays= rentedTime - daysRented
+        const priceDay = originalPrice/daysRented
         const extraFee = priceDay*extraDays
         
-        await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3`,[Today, extraFee, id])
+
+        await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3`,[today, extraFee, id])
 
         res.sendStatus(200)
-
+ 
     }catch(err){
         res.status(500).send(err.message)
     }
