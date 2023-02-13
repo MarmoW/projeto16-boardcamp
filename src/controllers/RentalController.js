@@ -24,15 +24,15 @@ export async function RentGame(req, res){
     try{   
         const CheckCustomer = await db.query("SELECT * FROM customers WHERE customerId = $1", [customerId]);
 
-        if (CheckCustomer.length < 1) return res.sendStatus(400);
+        if (CheckCustomer.rows.length < 1) return res.sendStatus(400);
 
         const GetGameInfo = await db.query("SELECT * FROM games WHERE id=$1", [gameId]);
 
-        if (GetGameInfo.length < 1) return res.sendStatus(400);
+        if (GetGameInfo.rows.length < 1) return res.sendStatus(400);
         
         const CheckGameRentals = await db.query("SELECT * FROM rentals WHERE gameId = $1", [gameId]);
 
-        if(CheckGameRentals.length >= GetGameInfo.stockTotal) return res.sendStatus(400);
+        if(CheckGameRentals.rows.length >= GetGameInfo.rows[0].stockTotal) return res.sendStatus(400);
 
         const EstPrice = GetGameInfo.pricePerDay * daysRented;
 
@@ -49,6 +49,7 @@ export async function RentGame(req, res){
 export async function DepositGame(req, res){
 
     try{
+
 
     }catch(err){
 

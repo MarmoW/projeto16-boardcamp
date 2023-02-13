@@ -7,7 +7,7 @@ export async function SignUp(req, res){
 
     try{
         const CheckCpf = await db.query("SELECT * FROM customers WHERE cpf =$1", [cpf]);
-        if(CheckCpf.length > 0) return res.status(409).send();
+        if(CheckCpf.rows.length > 0) return res.status(409).send();
 
         await db.query("INSERT INTO customers (name, phone, cpf, birthday) WHERE ($1,$2,$3,$4)", [name, phone, cpf, birthday])
 
@@ -47,7 +47,7 @@ export async function GetById(req,res){
     try{
         const GetWithId = await db.query("SELECT * FROM customers WHERE id=$1", [id]);
 
-        if(id.length < 1) return res.sendStatus(404);
+        if(id.rows.length < 1) return res.sendStatus(404);
 
         res.send(GetWithId);
 

@@ -21,11 +21,11 @@ export async function InsertGames(req, res){
     try{
         const CheckGame = await db.query("SELECT * FROM games WHERE name=$1", [name]);
 
-        if(CheckGame.length > 0) return res.sendStatus(409);
+        if(CheckGame.rows[0].name == name ) return res.sendStatus(409);
 
         await db.query("INSERT INTO games (name, image, stockTotal, pricePerDay) VALUES ($1, $2, $3, $4)",[name, image, stockTotal, pricePerDay]);
 
-        res.status(201).send();
+        res.sendStatus(201);
 
     }catch(err){
         res.send(err.message);
