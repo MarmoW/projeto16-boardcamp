@@ -3,6 +3,7 @@ import {db} from '../database/database.connection.js';
 import dayjs from 'dayjs';
 
 export async function ListRentals(req, res){
+    const {customerId} = req.params;
 
     try{
 
@@ -48,14 +49,29 @@ export async function RentGame(req, res){
 } // alugar jogo
 
 export async function DepositGame(req, res){
-    const {id} = req.query;
-
-
+    const {id} = req.params;
+    const Today = dayjs().format("YYYY-MM-DD");
+    
     try{
+        const GetGame = await db.query(`SELECT * FROM rentals WHERE id=$1`, [id])
 
+        if(GetGame.rows.length < 1) return res.sendStatus(404)
+        if(GetGame.rows[0].returnDate != null) return res.sendStatus(400)
+
+        if(GetGame.rows[0].returnDate.isBefore(Today)){
+            await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=0 WHERE id=$2`, [Today, id])
+            res.sendStatus(200)
+        }
+        const extraDays= GetGame.rows[0].rentDate.diff(Today, 'd')
+        const priceDay = GetGame.rows[0].originalPrice/GetGame.rows[0].daysRented
+        const extraFee = priceDay*extraDays
+
+        await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3`,[Today, extraFee, id])
+
+        res.sendStatus(200)
 
     }catch(err){
-
+        res.status(500).send(err.message)
     }
 } // devolver o jogo
 
