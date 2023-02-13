@@ -4,7 +4,7 @@ export default function ValidateMiddleware(schema) {
       
       if (error) {
         const errMessage = error.details.map(err => err.message)
-        return res.status(422).send(errMessage)
+        return res.status(400).send(errMessage)
       }
       
       next()

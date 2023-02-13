@@ -6,7 +6,7 @@ export async function GetGames(req, res){
     try{
         const allGames = await db.query("SELECT * FROM games");
 
-        res.send(allGames);
+        res.send(allGames.rows);
 
     }catch(err){
 
@@ -17,6 +17,7 @@ export async function GetGames(req, res){
 
 export async function InsertGames(req, res){
     const {name, image, stockTotal, pricePerDay} = req.body;
+
 
     try{
         const checkGame = await db.query("SELECT * FROM games WHERE name=$1", [name]);
