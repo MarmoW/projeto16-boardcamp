@@ -59,9 +59,9 @@ export async function DepositGame(req, res){
     try{
         const getGame = await db.query(`SELECT * FROM rentals WHERE id=$1`, [id])
         
-        const {rentDate, daysRented, returnDate, originalPrice} = getGame.rows[0]
-
         if(getGame.rows.length == 0) return res.sendStatus(404)
+
+        const {rentDate, daysRented, returnDate, originalPrice} = getGame.rows[0]
 
         if(returnDate != null) return res.sendStatus(400)
         
