@@ -61,7 +61,7 @@ export async function DepositGame(req, res){
         
         const {rentDate, daysRented, returnDate, originalPrice} = getGame.rows[0]
 
-        if(getGame.rows.length < 1) return res.sendStatus(404)
+        if(getGame.rows.length == 0) return res.sendStatus(404)
 
         if(returnDate != null) return res.sendStatus(400)
         
@@ -91,12 +91,17 @@ export async function DeleteRental(req, res){
 const {id} = req.params;
 try{
     const findRental = await db.query(`SELECT * FROM rentals WHERE id=$1`,[id])
-    if(findRental.rows.length < 1) return res.sendStatus(404)
-    if(findRental.rows[0].returnDate != null) return res.sendStatus(400)
+
+    const {returnDate} = findRental.rows[0]
+
+    if(!returnDate) return res.sendStatus(404)
+ 
+    if(returnDate != null) return res.sendStatus(400)
 
     await db.query(`DELETE FROM rentals WHERE id=$1`, [id])
 
     res.sendStatus(200)
+
 }catch(err){
     res.status(500).send(err.message)
 }
