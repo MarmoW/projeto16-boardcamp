@@ -1,5 +1,5 @@
-import { ClientSchema } from "../schema/CustomerSchema.js";
-import db from '../database/database.connection.js';
+import { CustomerSchema } from "../schema/CustomerSchema.js";
+import {db} from '../database/database.connection.js';
 import dayjs from 'dayjs';
 
 export async function ListRentals(req, res){
@@ -31,7 +31,7 @@ export async function RentGame(req, res){
         if (GetGameInfo.length < 1) return res.sendStatus(400);
         
         const CheckGameRentals = await db.query("SELECT * FROM rentals WHERE gameId = $1", [gameId]);
-        
+
         if(CheckGameRentals.length >= GetGameInfo.stockTotal) return res.sendStatus(400);
 
         const EstPrice = GetGameInfo.pricePerDay * daysRented;
@@ -46,6 +46,13 @@ export async function RentGame(req, res){
     }
 } // alugar jogo
 
-export async function DepositGame(req, res){} // devolver o jogo
+export async function DepositGame(req, res){
+
+    try{
+
+    }catch(err){
+
+    }
+} // devolver o jogo
 
 export async function DeleteRental(req, res){} // deleta locação

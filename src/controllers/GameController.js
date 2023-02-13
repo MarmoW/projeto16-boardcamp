@@ -1,7 +1,7 @@
-import db from '../database/database.connection.js';
+import {db} from '../database/database.connection.js';
 import { GameSchema } from '../schema/GameSchema.js';
 
-export function GetGames(req, res){
+export async function GetGames(req, res){
 
     try{
         const AllGames = await db.query("SELECT * FROM games");
@@ -15,7 +15,7 @@ export function GetGames(req, res){
     }
 };
 
-export function InsertGames(req, res){
+export async function InsertGames(req, res){
     const {name, image, stockTotal, pricePerDay} = req.body;
 
     try{

@@ -5,7 +5,9 @@ import {ListRentals, RentGame, DepositGame, DeleteRental} from '../controllers/R
 
 const RentalRouter = Router();
 
-RentalRouter.get("/rentals", ListRentals)
-RentalRouter.post("/rentals", ValidateMiddleware(RentalSchema), RentGame)
-RentalRouter.post("/rentals/:id/return", DepositGame)
-RentalRouter.delete("/rentals/:id", DeleteRental)
+RentalRouter.get("/rentals", ListRentals);
+RentalRouter.post("/rentals", ValidateMiddleware(RentalSchema), RentGame);
+RentalRouter.post("/rentals/:id/return", DepositGame);
+RentalRouter.delete("/rentals/:id", DeleteRental);
+
+export default RentalRouter;

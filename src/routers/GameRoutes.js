@@ -7,3 +7,5 @@ const GameRouter = Router();
 
 GameRouter.get("/games", GetGames);
 GameRouter.post("/games", ValidateMiddleware(GameSchema), InsertGames);
+
+export default GameRouter;
