@@ -4,9 +4,9 @@ import { GameSchema } from '../schema/GameSchema.js';
 export async function GetGames(req, res){
 
     try{
-        const AllGames = await db.query("SELECT * FROM games");
+        const allGames = await db.query("SELECT * FROM games");
 
-        res.send(AllGames);
+        res.send(allGames);
 
     }catch(err){
 
@@ -19,9 +19,9 @@ export async function InsertGames(req, res){
     const {name, image, stockTotal, pricePerDay} = req.body;
 
     try{
-        const CheckGame = await db.query("SELECT * FROM games WHERE name=$1", [name]);
+        const checkGame = await db.query("SELECT * FROM games WHERE name=$1", [name]);
 
-        if(CheckGame.rows[0].name == name ) return res.sendStatus(409);
+        if(checkGame.rows[0].name == name ) return res.sendStatus(409);
 
         await db.query("INSERT INTO games (name, image, stockTotal, pricePerDay) VALUES ($1, $2, $3, $4)",[name, image, stockTotal, pricePerDay]);
 

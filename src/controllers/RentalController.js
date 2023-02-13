@@ -6,9 +6,9 @@ export async function ListRentals(req, res){
 
     try{
 
-        const GetRentals = db.query("SELECT * FROM rentals");
+        const getRentals = db.query("SELECT * FROM rentals");
 
-        res.send(GetRentals)
+        res.send(getRentals)
         
     }catch(err){
         res.send(err.message)
@@ -22,19 +22,19 @@ export async function RentGame(req, res){
     if(daysRented < 1) res.sendStatus(400);
 
     try{   
-        const CheckCustomer = await db.query("SELECT * FROM customers WHERE customerId = $1", [customerId]);
+        const checkCustomer = await db.query("SELECT * FROM customers WHERE customerId = $1", [customerId]);
 
-        if (CheckCustomer.rows.length < 1) return res.sendStatus(400);
+        if (checkCustomer.rows.length < 1) return res.sendStatus(400);
 
-        const GetGameInfo = await db.query("SELECT * FROM games WHERE id=$1", [gameId]);
+        const getGameInfo = await db.query("SELECT * FROM games WHERE id=$1", [gameId]);
 
-        if (GetGameInfo.rows.length < 1) return res.sendStatus(400);
+        if (getGameInfo.rows.length < 1) return res.sendStatus(400);
         
-        const CheckGameRentals = await db.query("SELECT * FROM rentals WHERE gameId = $1", [gameId]);
+        const checkGameRentals = await db.query("SELECT * FROM rentals WHERE gameId = $1", [gameId]);
 
-        if(CheckGameRentals.rows.length >= GetGameInfo.rows[0].stockTotal) return res.sendStatus(400);
+        if(checkGameRentals.rows.length >= getGameInfo.rows[0].stockTotal) return res.sendStatus(400);
 
-        const EstPrice = GetGameInfo.pricePerDay * daysRented;
+        const EstPrice = getGameInfo.rows[0].pricePerDay * daysRented;
 
         await db.query("INSERT INTO rentals (customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee) VALUES ($1,$2,$3,$4,$5,$6,$7)", [customerId, gameId, Today, daysRented, null, EstPrice, null]);
 
