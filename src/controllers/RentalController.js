@@ -7,7 +7,11 @@ export async function ListRentals(req, res){
 
     try{
 
-        const getRentals = await db.query("SELECT * FROM rentals");
+        const getRentals = await db.query(`SELECT rentals.*,
+        JSON_BUILD_OBJECT('id', customers.id, 'name', customers.name) AS customer,
+        JSON_BUILD_OBJECT('id', games.id, 'name', games.name) AS game FROM rentals 
+        JOIN customers ON rentals."customerId" = customers.Id 
+        JOIN games ON rentals."gameId"=games.id`);
 
         res.send(getRentals.rows);
         
@@ -19,7 +23,7 @@ export async function ListRentals(req, res){
 export async function RentGame(req, res){
     const {customerId, gameId, daysRented} = req.body;
     const Today = dayjs().format("YYYY-MM-DD");
-
+    
     if(daysRented < 1) res.sendStatus(400);
 
     try{   
@@ -51,7 +55,7 @@ export async function RentGame(req, res){
 export async function DepositGame(req, res){
     const {id} = req.params;
     const Today = dayjs().format("YYYY-MM-DD");
-    
+    console.log(Today)
     try{
         const GetGame = await db.query(`SELECT * FROM rentals WHERE id=$1`, [id])
 
