@@ -8,7 +8,7 @@ const CustomerRouter = Router();
 CustomerRouter.get("/customers", GetAllUsers);
 CustomerRouter.get("/customers/:id", GetById);
 CustomerRouter.post("/customers", ValidateMiddleware(CustomerSchema), SignUp);
-CustomerRouter.put("/customers", ValidateMiddleware(CustomerSchema), UpdateUser);
+CustomerRouter.put("/customers/:id", ValidateMiddleware(CustomerSchema), UpdateUser);
 
 
 export default CustomerRouter;

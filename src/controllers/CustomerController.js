@@ -20,12 +20,12 @@ export async function SignUp(req, res){
 } 
 
 export async function UpdateUser(req, res){
-    const {id} = req.query;
+    const {id} = req.params;
     const {name, phone, cpf, birthday} = req.body;
 
     try{
         const checkUpdateCpf = await db.query(`SELECT * FROM customers WHERE cpf=$1`,[cpf])
-
+        console.log(checkUpdateCpf.rows[0].id, id)
         if(checkUpdateCpf.rows[0].id != id) return res.sendStatus(409);
         
         await db.query(`UPDATE customers SET name=$1, phone=$2, cpf=$3, birthday=$4 WHERE id=$5`, [name, phone, cpf, birthday, id]);
@@ -59,7 +59,7 @@ export async function GetById(req,res){
 
         if(getWithId.rows.length < 1) return res.sendStatus(404);
 
-        res.send(getWithId.rows);
+        res.send(getWithId.rows[0]);
 
     }catch(err){
         res.status(500).send(err.message);
