@@ -6,12 +6,12 @@ export async function ListRentals(req, res){
 
     try{
 
-        const getRentals = db.query("SELECT * FROM rentals");
+        const getRentals = await db.query("SELECT * FROM rentals");
 
-        res.send(getRentals)
+        res.send(getRentals.rows);
         
     }catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
     }
 } // listar jogos alugados
 
@@ -47,6 +47,8 @@ export async function RentGame(req, res){
 } // alugar jogo
 
 export async function DepositGame(req, res){
+    const {id} = req.query;
+
 
     try{
 

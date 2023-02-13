@@ -43,7 +43,7 @@ export async function GetAllUsers(req, res){
     try{
         const allCustomers = await db.query("SELECT * FROM customers");
 
-        res.send(allCustomers.rows);
+        res.status(200).send(allCustomers.rows);
 
     }catch(err){
         res.status(500).send(err.message);
@@ -52,12 +52,12 @@ export async function GetAllUsers(req, res){
 }
 
 export async function GetById(req,res){
-    const {id} = req.query;
-
+    const { id } = req.params;
+    console.log(id)
     try{
         const getWithId = await db.query("SELECT * FROM customers WHERE id=$1", [id]);
 
-        if(id.rows.length < 1) return res.sendStatus(404);
+        if(getWithId.rows.length < 1) return res.sendStatus(404);
 
         res.send(getWithId.rows);
 
