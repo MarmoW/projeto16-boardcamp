@@ -58,14 +58,16 @@ export async function DepositGame(req, res){
         if(GetGame.rows.length < 1) return res.sendStatus(404)
         if(GetGame.rows[0].returnDate != null) return res.sendStatus(400)
 
-        if(GetGame.rows[0].returnDate.isBefore(Today)){
+        console.log(GetGame.rows[0].rentDate)
+        if(GetGame.rows[0].rentDate.diff(Today, 'days') <= GetGame.rows[0].daysRented){
             await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=0 WHERE id=$2`, [Today, id])
             res.sendStatus(200)
         }
-        const extraDays= GetGame.rows[0].rentDate.diff(Today, 'd')
+        
+        const extraDays= GetGame.rows[0].rentDate.diff(Today, 'days') - GetGame.rows[0].rentedDays
         const priceDay = GetGame.rows[0].originalPrice/GetGame.rows[0].daysRented
         const extraFee = priceDay*extraDays
-
+        
         await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3`,[Today, extraFee, id])
 
         res.sendStatus(200)
@@ -75,4 +77,18 @@ export async function DepositGame(req, res){
     }
 } // devolver o jogo
 
-export async function DeleteRental(req, res){} // deleta locação
+export async function DeleteRental(req, res){
+const {id} = req.params;
+try{
+    const findRental = await db.query(`SELECT * FROM rentals WHERE id=$1`,[id])
+    if(findRental.rows.length < 1) return res.sendStatus(404)
+    if(findRental.rows[0].returnDate != null) return res.sendStatus(400)
+
+    await db.query(`DELETE FROM rentals WHERE id=$1`, [id])
+
+    res.sendStatus(200)
+}catch(err){
+    res.status(500).send(err.message)
+}
+
+} // deleta locação
