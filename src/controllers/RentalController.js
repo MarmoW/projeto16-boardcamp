@@ -22,15 +22,16 @@ export async function RentGame(req, res){
     if(daysRented < 1) res.sendStatus(400);
 
     try{   
-        const checkCustomer = await db.query("SELECT * FROM customers WHERE customerId = $1", [customerId]);
-
+        console.log(customerId)
+        const checkCustomer = await db.query(`SELECT * FROM customers WHERE id=$1`, [customerId]);
+         
         if (checkCustomer.rows.length < 1) return res.sendStatus(400);
-
+        
         const getGameInfo = await db.query("SELECT * FROM games WHERE id=$1", [gameId]);
 
         if (getGameInfo.rows.length < 1) return res.sendStatus(400);
         
-        const checkGameRentals = await db.query("SELECT * FROM rentals WHERE gameId = $1", [gameId]);
+        const checkGameRentals = await db.query(`SELECT * FROM rentals WHERE "gameId" = $1`, [gameId]);
 
         if(checkGameRentals.rows.length >= getGameInfo.rows[0].stockTotal) return res.sendStatus(400);
 
@@ -41,7 +42,7 @@ export async function RentGame(req, res){
         res.sendStatus(201);
 
     }catch(err){
-        res.send(err.message)
+        res.status(500).send(err.message)
 
     }
 } // alugar jogo
