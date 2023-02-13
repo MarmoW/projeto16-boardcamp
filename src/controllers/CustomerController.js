@@ -26,7 +26,7 @@ export async function UpdateUser(req, res){
     try{
         const checkUpdateCpf = await db.query(`SELECT * FROM customers WHERE cpf=$1`,[cpf]);
         
-        if(checkUpdateCpf.rows.length > 0) return res.sendStatus(409);
+        if(checkUpdateCpf.rows.length < 1) return res.sendStatus(409);
 
         if(checkUpdateCpf.rows[0].id != id) return res.sendStatus(409);
         
