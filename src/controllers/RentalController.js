@@ -36,7 +36,7 @@ export async function RentGame(req, res){
 
         const EstPrice = getGameInfo.rows[0].pricePerDay * daysRented;
 
-        await db.query("INSERT INTO rentals (customerId, gameId, rentDate, daysRented, returnDate, originalPrice, delayFee) VALUES ($1,$2,$3,$4,$5,$6,$7)", [customerId, gameId, Today, daysRented, null, EstPrice, null]);
+        await db.query(`INSERT INTO rentals ("customerId", "gameId", "rentDate", "daysRented", "returnDate", "originalPrice", "delayFee") VALUES ($1,$2,$3,$4,$5,$6,$7)`, [customerId, gameId, Today, daysRented, null, EstPrice, null]);
 
         res.sendStatus(201);
 
