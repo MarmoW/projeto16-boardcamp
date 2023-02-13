@@ -6,15 +6,16 @@ export async function SignUp(req, res){
     const {name, phone, cpf, birthday} = req.body;
 
     try{
-        const checkCpf = await db.query("SELECT * FROM customers WHERE cpf =$1", [cpf]);
+        const checkCpf = await db.query("SELECT * FROM customers WHERE cpf=$1", [cpf]);
+
         if(checkCpf.rows.length > 0) return res.status(409).send();
 
-        await db.query("INSERT INTO customers (name, phone, cpf, birthday) WHERE ($1,$2,$3,$4)", [name, phone, cpf, birthday])
+        await db.query("INSERT INTO customers (name, phone, cpf, birthday) WHERE ($1,$2,$3,$4)", [name, phone, cpf, birthday]);
 
         res.sendStatus(201);
         
-    }catch{
-
+    }catch(err){
+        res.status(500).send(err.message);
     }
 } 
 
@@ -22,11 +23,11 @@ export async function UpdateUser(req, res){
     const {id} = req.query;
     const {name, phone, cpf, birthday} = req.body;
     try{
-        const checkUpdateCpf = db.query(`SELECT * FROM customers WHERE cpf=$1`,[cpf])
+        const checkUpdateCpf = await db.query(`SELECT * FROM customers WHERE cpf=$1`,[cpf])
 
         if(checkUpdateCpf.rows.length > 0) return res.sendStatus(409);
 
-        db.query(`UPDATE users (name, phone, cpf, birthday) VALUES ($1,$2,$3,$4) WHERE id=$5`, [name, phone, cpf, birthday, id]);
+        await db.query(`UPDATE users (name, phone, cpf, birthday) VALUES ($1,$2,$3,$4) WHERE id=$5`, [name, phone, cpf, birthday, id]);
 
         res.sendStatus(200);
 
