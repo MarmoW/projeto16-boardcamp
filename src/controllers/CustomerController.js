@@ -11,7 +11,7 @@ export async function SignUp(req, res){
 
         await db.query("INSERT INTO customers (name, phone, cpf, birthday) WHERE ($1,$2,$3,$4)", [name, phone, cpf, birthday])
 
-        res.status(201).send();
+        res.sendStatus(201);
         
     }catch{
 
