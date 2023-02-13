@@ -1,4 +1,3 @@
-import { CustomerSchema } from "../schema/CustomerSchema.js";
 import {db} from '../database/database.connection.js';
 import dayjs from 'dayjs';
 
@@ -66,7 +65,6 @@ export async function DepositGame(req, res){
         if(returnDate != null) return res.sendStatus(400)
         
         const rentedTime = dayjs().diff(rentDate, 'day')
-        console.log(rentedTime, daysRented)
 
         if(rentedTime <= daysRented){
             await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=0 WHERE id=$2`, [today, id])

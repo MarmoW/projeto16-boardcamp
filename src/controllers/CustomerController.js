@@ -1,6 +1,5 @@
-import { CustomerSchema } from "../schema/CustomerSchema.js";
 import {db} from '../database/database.connection.js';
-import { response } from "express";
+
 
 export async function SignUp(req, res){
     const {name, phone, cpf, birthday} = req.body;
@@ -56,7 +55,7 @@ export async function GetAllUsers(req, res){
 
 export async function GetById(req,res){
     const { id } = req.params;
-    console.log(id)
+     
     try{
         const getWithId = await db.query("SELECT * FROM customers WHERE id=$1", [id]);
 
