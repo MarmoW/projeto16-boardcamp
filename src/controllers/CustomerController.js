@@ -2,10 +2,10 @@ import { CustomerSchema } from "../schema/CustomerSchema.js";
 import {db} from '../database/database.connection.js';
 
 export async function SignUp(req, res){
-    const {name, phone, cpf, birthday} = req.body
+    const {name, phone, cpf, birthday} = req.body;
 
     try{
-        const CheckCpf = await db.query("SELECT * FROM customers WHERE cpf =$1", [cpf])
+        const CheckCpf = await db.query("SELECT * FROM customers WHERE cpf =$1", [cpf]);
 
         
     }catch{
@@ -15,6 +15,12 @@ export async function SignUp(req, res){
 
 
 export async function UpdateUser(req, res){
+    try{
+
+
+    }catch(err){
+        res.send(err.message);
+    }
 
 }
 
@@ -31,4 +37,17 @@ export async function GetAllUsers(req, res){
     }
 }
 
-export async function GetById(req,res){}
+export async function GetById(req,res){
+    const {id} = req.query;
+
+    try{
+        const GetWithId = await db.query("SELECT * FROM customers WHERE id=$1", [id]);
+
+        if(id.length < 1) return res.sendStatus(404);
+
+        res.send(GetWithId);
+
+    }catch(err){
+        res.send(err.message);
+    }
+}
