@@ -19,8 +19,16 @@ export async function SignUp(req, res){
 } 
 
 export async function UpdateUser(req, res){
+    const {id} = req.query;
+    const {name, phone, cpf, birthday} = req.body;
     try{
+        const checkUpdateCpf = db.query(`SELECT * FROM customers WHERE cpf=$1`,[cpf])
 
+        if(checkUpdateCpf.rows.length > 0) return res.sendStatus(409);
+
+        db.query(`UPDATE users (name, phone, cpf, birthday) VALUES ($1,$2,$3,$4) WHERE id=$5`, [name, phone, cpf, birthday, id]);
+
+        res.sendStatus(200);
 
     }catch(err){
         res.send(err.message);
@@ -33,7 +41,7 @@ export async function GetAllUsers(req, res){
     try{
         const customers = await db.query("SELECT * FROM users");
 
-        res.send(customers);
+        res.send(customers.rows);
 
     }catch(err){
         res.send(err.message);
@@ -49,7 +57,7 @@ export async function GetById(req,res){
 
         if(id.rows.length < 1) return res.sendStatus(404);
 
-        res.send(getWithId);
+        res.send(getWithId.rows);
 
     }catch(err){
         res.send(err.message);
