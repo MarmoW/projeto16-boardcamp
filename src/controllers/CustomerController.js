@@ -13,7 +13,6 @@ export async function SignUp(req, res){
     }
 } 
 
-
 export async function UpdateUser(req, res){
     try{
 
