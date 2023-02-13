@@ -32,7 +32,7 @@ export async function UpdateUser(req, res){
         res.sendStatus(200);
 
     }catch(err){
-        res.send(err.message);
+        res.status(500).send(err.message);
     }
 
 }
@@ -40,12 +40,12 @@ export async function UpdateUser(req, res){
 export async function GetAllUsers(req, res){
 
     try{
-        const customers = await db.query("SELECT * FROM users");
+        const allCustomers = await db.query("SELECT * FROM customers");
 
-        res.send(customers.rows);
+        res.send(allCustomers.rows);
 
     }catch(err){
-        res.send(err.message);
+        res.status(500).send(err.message);
 
     }
 }
@@ -61,6 +61,6 @@ export async function GetById(req,res){
         res.send(getWithId.rows);
 
     }catch(err){
-        res.send(err.message);
+        res.status(500).send(err.message);
     }
 }
