@@ -8,9 +8,9 @@ export async function SignUp(req, res){
     try{
         const checkCpf = await db.query("SELECT * FROM customers WHERE cpf=$1", [cpf]);
 
-        if(checkCpf.rows.length > 0) return res.status(409).send();
+        if(checkCpf.rows.length > 0) return res.sendStatus(409);
 
-        await db.query("INSERT INTO customers (name, phone, cpf, birthday) WHERE ($1,$2,$3,$4)", [name, phone, cpf, birthday]);
+        await db.query("INSERT INTO customers (name, phone, cpf, birthday) VALUES ($1,$2,$3,$4)", [name, phone, cpf, birthday]);
 
         res.sendStatus(201);
         
