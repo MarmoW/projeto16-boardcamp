@@ -77,7 +77,6 @@ export async function DepositGame(req, res){
         const priceDay = originalPrice/daysRented
         const extraFee = priceDay*extraDays
         
-
         await db.query(`UPDATE rentals SET "returnDate"=$1, "delayFee"=$2 WHERE id=$3`,[today, extraFee, id])
 
         res.sendStatus(200)
@@ -91,13 +90,13 @@ export async function DeleteRental(req, res){
 const {id} = req.params;
 try{
     const findRental = await db.query(`SELECT * FROM rentals WHERE id=$1`,[id])
+    
+    if(findRental.rows.length < 1) return res.sendStatus(404)
 
     const {returnDate} = findRental.rows[0]
-
-    if(!returnDate) return res.sendStatus(404)
- 
-    if(returnDate != null) return res.sendStatus(400)
-
+    
+    if(returnDate == null) return res.sendStatus(400)
+    
     await db.query(`DELETE FROM rentals WHERE id=$1`, [id])
 
     res.sendStatus(200)
